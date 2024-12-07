@@ -4,23 +4,30 @@ import { ArrowRight, Sparkles, Target, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Navigation } from "@/components/Navigation";
 
 const Index = () => {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     // Check authentication status
     supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
-        navigate("/login");
+        setIsAuthenticated(false);
+      } else {
+        setIsAuthenticated(true);
       }
     });
   }, [navigate]);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate("/login");
+  const handleGenerateClick = () => {
+    if (isAuthenticated) {
+      navigate("/generator");
+    } else {
+      navigate("/login");
+    }
   };
 
   const features = [
@@ -43,12 +50,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Add Sign Out Button */}
-      <div className="absolute top-4 right-4">
-        <Button variant="outline" onClick={handleSignOut}>
-          Sign Out
-        </Button>
-      </div>
+      <Navigation />
 
       {/* Hero Section */}
       <section className="container px-4 pt-32 pb-20 mx-auto text-center">
@@ -74,7 +76,7 @@ const Index = () => {
               className="text-lg transition-all duration-200 hover:scale-105"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              onClick={() => navigate("/generator")}
+              onClick={handleGenerateClick}
             >
               Start Generating
               <ArrowRight className={`ml-2 transition-transform duration-200 ${isHovered ? "translate-x-1" : ""}`} />
