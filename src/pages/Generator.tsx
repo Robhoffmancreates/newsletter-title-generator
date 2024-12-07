@@ -39,7 +39,18 @@ const Generator = () => {
         body: { context }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check if it's a quota exceeded error
+        if (error.message?.includes('quota exceeded')) {
+          toast({
+            title: "API Limit Reached",
+            description: "The API quota has been exceeded. Please try again later.",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw error;
+      }
       
       setTitles(data.titles);
       toast({
