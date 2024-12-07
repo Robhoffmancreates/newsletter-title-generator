@@ -81,7 +81,7 @@ const Generator = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <div className="container p-4 md:p-8 pt-70">
+      <div className="container p-4 md:p-8 pt-150">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-primary">Newsletter Title Generator</h1>
