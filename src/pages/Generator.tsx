@@ -81,9 +81,9 @@ const Generator = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <div className="container p-4 md:p-8 pt-150">
+      <main className="pt-24 px-4 md:px-8">
         <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center">
+          <div className="text-center mt-16">
             <h1 className="text-4xl font-bold text-primary">Newsletter Title Generator</h1>
             <p className="mt-2 text-gray-600">
               Describe your newsletter and get 20 creative title suggestions
@@ -141,7 +141,7 @@ const Generator = () => {
             </Card>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };
