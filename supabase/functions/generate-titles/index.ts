@@ -15,6 +15,12 @@ serve(async (req) => {
 
   try {
     const { context } = await req.json();
+    console.log('Received context:', context);
+
+    if (!openAIApiKey) {
+      console.error('OpenAI API key not found');
+      throw new Error('OpenAI API key not configured');
+    }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -23,7 +29,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [
           {
             role: 'system',
@@ -37,7 +43,15 @@ serve(async (req) => {
       }),
     });
 
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('OpenAI API error:', error);
+      throw new Error('Failed to generate titles');
+    }
+
     const data = await response.json();
+    console.log('OpenAI response:', data);
+
     const titles = data.choices[0].message.content
       .split('\n')
       .filter(line => line.trim())
@@ -47,8 +61,10 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error('Error in generate-titles function:', error);
+    return new Response(JSON.stringify({ 
+      error: error.message || 'Failed to generate titles'
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
