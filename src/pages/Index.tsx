@@ -1,12 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles, Target, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    // Check authentication status
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        navigate("/login");
+      }
+    });
+  }, [navigate]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
+  };
 
   const features = [
     {
@@ -28,6 +43,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Add Sign Out Button */}
+      <div className="absolute top-4 right-4">
+        <Button variant="outline" onClick={handleSignOut}>
+          Sign Out
+        </Button>
+      </div>
+
       {/* Hero Section */}
       <section className="container px-4 pt-32 pb-20 mx-auto text-center">
         <motion.div
