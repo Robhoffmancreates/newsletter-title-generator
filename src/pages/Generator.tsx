@@ -43,8 +43,8 @@ const Generator = () => {
         // Check if it's a quota exceeded error
         if (error.message?.includes('quota exceeded')) {
           toast({
-            title: "API Limit Reached",
-            description: "The API quota has been exceeded. Please try again later.",
+            title: "OpenAI API Limit Reached",
+            description: "The OpenAI API quota has been exceeded. Please try again later.",
             variant: "destructive",
           });
           return;
@@ -61,7 +61,7 @@ const Generator = () => {
       console.error('Error generating titles:', error);
       toast({
         title: "Error",
-        description: "Failed to generate titles. Please try again.",
+        description: error.message || "Failed to generate titles. Please try again.",
         variant: "destructive",
       });
     } finally {

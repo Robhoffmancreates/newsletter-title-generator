@@ -30,7 +30,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [
           {
             role: 'system',
@@ -49,11 +49,11 @@ serve(async (req) => {
       console.error('OpenAI API error:', error);
       
       // Handle quota exceeded error specifically
-      if (error.error?.code === 'insufficient_quota') {
+      if (error.error?.type === 'insufficient_quota') {
         return new Response(JSON.stringify({ 
           error: 'OpenAI API quota exceeded. Please check your billing details or try again later.'
         }), {
-          status: 402, // Payment Required
+          status: 402,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
