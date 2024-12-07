@@ -35,20 +35,11 @@ const Generator = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-titles`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ context }),
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('generate-titles', {
+        body: { context }
+      });
 
-      const data = await response.json();
-      if (data.error) throw new Error(data.error);
+      if (error) throw error;
       
       setTitles(data.titles);
       toast({
@@ -56,6 +47,7 @@ const Generator = () => {
         description: "Generated 20 newsletter titles for you!",
       });
     } catch (error) {
+      console.error('Error generating titles:', error);
       toast({
         title: "Error",
         description: "Failed to generate titles. Please try again.",
