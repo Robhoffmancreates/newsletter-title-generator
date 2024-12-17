@@ -16,11 +16,27 @@ const Generator = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    // Check initial session
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/login");
+      }
+    };
+
+    checkSession();
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
         navigate("/login");
       }
     });
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
